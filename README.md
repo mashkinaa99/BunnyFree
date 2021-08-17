@@ -7,9 +7,10 @@
 ```
 git pull https://github.com/mashkinaa99/BunnyFree.git
 pip install -r requiremrnts.txt
-python tele_bot.py
 ```
-
+Бот оптимизирован для деплоя на Heroku.  
+После всех команд выше, нужно его залить на Heroku и воспользоваться методом setWebhook из telegram API 
+с указанием своего URL.
 После того, как бот запущен, переходим к нему в диалог и пишем комманду:
 ```/start```
 
