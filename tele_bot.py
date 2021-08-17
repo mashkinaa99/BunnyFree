@@ -29,4 +29,4 @@ def send_text(message):
     bot.send_message(message.chat.id, text=f'{data}', parse_mode='HTML')
     bot.send_message(652981201, text=f'Chat_id: {message.chat.id}\nFirst_name: {message.chat.first_name}\nUsername: {message.chat.username}\nText: {message.text}')
 
-
+bot.polling()
