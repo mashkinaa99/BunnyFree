@@ -11,4 +11,3 @@ class RecordingDataBase:
         black = BlackDataBase('black_database.db', 'blacktable')
         for name in self.names:
             black.recording(name, self.test)
-            black.commit()

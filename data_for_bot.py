@@ -2,6 +2,12 @@ from black_database import BlackDataBase
 
 
 class DataForBot:
+    smiley_good = '\U0001F436'
+    smiley_bad = '\U0001F489'
+    smiley_working = '\U0001F64F'
+    test_good = '<b>НЕ ТЕСТИРУЮТ</b>'
+    test_bad = '!!!<b>ТЕСТИРУЮТ</b>!!!'
+    test_working = '!<b>ПЕРЕСТАЮТ ТЕСТИРОВАТЬ</b>!'
 
     def __init__(self, name: str):
         self.name = name
@@ -30,65 +36,113 @@ class DataForBot:
         else:
             return self.answer_for_none()
 
-    @staticmethod
-    def answer_for_one(name: str, test_company: str):
-        smail_good = '\U0001F436'
-        smail_bad = '\U0001F489'
-        test_good = '<b>НЕ ТЕСТИРУЕТ</b>'
-        test_bad = '!!! ТЕСТИРУЕТ !!!'
+    def answer_for_one(self, name: str, test_company: str):
 
         if test_company == 'No':
-            return f'Компания {name}\n{smail_good} {test_good} {smail_good}\nсвою продукцию на животных!'
+            return f'Компания {name}\n{self.smiley_good} {self.test_good} {self.smiley_good}\nсвою продукцию на животных!'
+
+        elif test_company == 'Yes':
+            return f'Компания {name}\n{self.smiley_bad} {self.test_bad} {self.smiley_bad}\nсвою продукцию на животных!'
 
         else:
-            return f'Компания {name}\n{smail_bad} {test_bad} {smail_bad}\nсвою продукцию на животных!'
+            return f'Компания {name}\n{self.smiley_working} {self.test_working} {self.smiley_working}\nсвою продукцию на животных!'
 
     def sorted_tests(self, list_of_companies: list):
         yes_test = []
         no_test = []
+        working_test = []
 
         for name, test in list_of_companies:
 
             if test == 'No':
                 no_test.append(name)
 
-            else:
+            elif test == 'Yes':
                 yes_test.append(name)
 
-        return self.answer_for_several(yes_test, no_test)
+            else:
+                working_test.append(name)
 
-    def answer_for_several(self, yes_test: list, no_test: list):
+        return self.correct_answer_for_several(yes_test, no_test, working_test)
+
+    def correct_answer_for_several(self, yes_test: list, no_test: list, working_test: list):
+        yes = f'\n\n{self.smiley_bad}'.join(yes_test)
+        no = f'\n\n{self.smiley_good}'.join(no_test)
+        working = f'\n\n{self.smiley_working}'.join(working_test)
+
+        if yes == '':
+            yes = None
+        elif no == '':
+            no = None
+        elif working == '':
+            working = None
+
+        return self.answer_for_several(yes, no, working)
+
+    def answer_for_several(self, yes: str, no: str, working: str):
         start_phrase = 'По вашему запросу найдено несколько компаний:'
-        smail_good = '\U0001F436'
-        smail_bad = '\U0001F489'
 
-        yes = f'\n\n{smail_bad}'.join(yes_test)
-        no = f'\n\n{smail_good}'.join(no_test)
-
-        test_good = '<b>НЕ ТЕСТИРУЮТ</b>'
-        test_bad = '<b>!!! ТЕСТИРУЮТ !!!</b>'
-
-        if len(yes_test) < 2 and len(no_test) > 2:
+        if no is not None\
+                and yes is None \
+                and working is None:
             return f'{start_phrase}\n\nВсе бренды, подходящие под запрос,' \
-                   f'\n{smail_good} {test_good} {smail_good}\n' \
+                   f'\n{self.smiley_good} {self.test_good} {self.smiley_good}\n' \
                    f'свою продукцию на животных!\n\n' \
-                   f'{smail_good}{no}'
+                   f'{self.smiley_good}{no}'
 
-        elif len(no_test) < 2 and len(yes_test) > 2:
+        elif yes is not None \
+                and no is None \
+                and working is None:
             return f'{start_phrase}\nВсе бренды, подходящие под запрос,' \
-                   f'\n{smail_bad} {test_bad} {smail_bad}\n' \
+                   f'\n{self.smiley_bad} {self.test_bad} {self.smiley_bad}\n' \
                    f'свою продукцию на животных!\n\n' \
-                   f'{smail_bad}{yes}'
+                   f'{self.smiley_bad}{yes}'
+
+        elif working is not None \
+                and no is None \
+                and yes is None:
+            return f'{start_phrase}\nВсе бренды, подходящие под запрос,' \
+                   f'\n{self.smiley_working} {self.test_working} {self.smiley_working}\n' \
+                   f'свою продукцию на животных!\n\n' \
+                   f'{self.smiley_working}{working}'
+
+        elif yes is not None \
+                and no is not None \
+                and working is None:
+            return f'{start_phrase}\n\n' \
+                   f'Бренды, которые {self.smiley_good} {self.test_good} {self.smiley_good}:\n\n' \
+                   f'{self.smiley_good}{no}\n\n\n' \
+                   f'Бренды, которые {self.smiley_bad} {self.test_bad} {self.smiley_bad}:\n\n' \
+                   f'{self.smiley_bad}{yes}\n\n'
+
+        elif yes is not None \
+                and working is not None \
+                and no is None:
+            return f'{start_phrase}\n\n' \
+                   f'Бренды, которые {self.smiley_working} {self.test_working} {self.smiley_working}:\n\n' \
+                   f'{self.smiley_working}{working}\n\n\n' \
+                   f'Бренды, которые {self.smiley_bad} {self.test_bad} {self.smiley_bad}:\n\n' \
+                   f'{self.smiley_bad}{yes}\n\n'
+
+        elif no is not None \
+                and working is not None \
+                and yes is None:
+            return f'{start_phrase}\n\n' \
+                   f'Бренды, которые {self.smiley_working} {self.test_working} {self.smiley_working}:\n\n' \
+                   f'{self.smiley_working}{working}\n\n\n' \
+                   f'Бренды, которые {self.smiley_good} {self.test_good} {self.smiley_good}:\n\n' \
+                   f'{self.smiley_good}{no}\n\n'
+
         else:
             return f'{start_phrase}\n\n' \
-                   f'Бренды, которые {smail_good} {test_good} {smail_good}:\n\n' \
-                   f'{smail_good}{no}\n\n\n' \
-                   f'Бренды, которые {smail_bad} {test_bad} {smail_bad}:\n\n' \
-                   f'{smail_bad}{yes}\n\n'
+                   f'Бренды, которые {self.smiley_working} {self.test_working} {self.smiley_working}:\n\n' \
+                   f'{self.smiley_working}{working}\n\n\n' \
+                   f'Бренды, которые {self.smiley_good} {self.test_good} {self.smiley_good}:\n\n' \
+                   f'{self.smiley_good}{no}\n\n' \
+                   f'Бренды, которые {self.smiley_bad} {self.test_bad} {self.smiley_bad}:\n\n' \
+                   f'{self.smiley_bad}{yes}\n\n'
 
     @staticmethod
     def answer_for_none():
         return 'Бот не нашел такую компанию в \"Черном\" или \"Белом\" списке.\n' \
                'Это может быть из-за того, что компанию пока нельзя отнести ни к одному из списков или из-за некоректного ввода.'
-
-
