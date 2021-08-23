@@ -9,15 +9,20 @@ class DataForBot:
     test_bad = '!!!<b>ТЕСТИРУЮТ</b>!!!'
     test_working = '!<b>ПЕРЕСТАЮТ ТЕСТИРОВАТЬ</b>!'
 
+    bad_string_s_t_s = str(smiley_bad + ' ' + test_bad + ' ' + smiley_bad)
+    good_string_s_t_s = str(smiley_good + ' ' + test_good + ' ' + smiley_good)
+    working_string_s_t_s = str(smiley_working + ' ' + test_working + ' ' + smiley_working)
+
     def __init__(self, name: str):
         self.name = name
 
     def correct_name(self):
-        if '\'' in self.name:
-            return 'Символа \" \' \" нет ни в одном названии бренда.'
-        elif len(self.name) <= 2:
+        correct_name = [m for m in self.name if m != '\'']
+        self.name = ''.join(correct_name)
+        if len(self.name) <= 2:
             return 'Длинна строки слишком маленькая, боту нужно больше символов.'
         else:
+            print(self.name)
             return self.search()
 
     def search(self):
@@ -39,13 +44,13 @@ class DataForBot:
     def answer_for_one(self, name: str, test_company: str):
 
         if test_company == 'No':
-            return f'Компания {name}\n{self.smiley_good} {self.test_good} {self.smiley_good}\nсвою продукцию на животных!'
+            return f'Компания {name}\n{self.good_string_s_t_s}\nсвою продукцию на животных!'
 
         elif test_company == 'Yes':
-            return f'Компания {name}\n{self.smiley_bad} {self.test_bad} {self.smiley_bad}\nсвою продукцию на животных!'
+            return f'Компания {name}\n{self.bad_string_s_t_s}\nсвою продукцию на животных!'
 
         else:
-            return f'Компания {name}\n{self.smiley_working} {self.test_working} {self.smiley_working}\nсвою продукцию на животных!'
+            return f'Компания {name}\n{self.working_string_s_t_s}\nсвою продукцию на животных!'
 
     def sorted_tests(self, list_of_companies: list):
         yes_test = []
@@ -82,11 +87,11 @@ class DataForBot:
     def answer_for_several(self, yes: str, no: str, working: str):
         start_phrase = 'По вашему запросу найдено несколько компаний:'
 
-        if no is not None\
+        if no is not None \
                 and yes is None \
                 and working is None:
             return f'{start_phrase}\n\nВсе бренды, подходящие под запрос,' \
-                   f'\n{self.smiley_good} {self.test_good} {self.smiley_good}\n' \
+                   f'\n{self.good_string_s_t_s}\n' \
                    f'свою продукцию на животных!\n\n' \
                    f'{self.smiley_good}{no}'
 
@@ -94,7 +99,7 @@ class DataForBot:
                 and no is None \
                 and working is None:
             return f'{start_phrase}\nВсе бренды, подходящие под запрос,' \
-                   f'\n{self.smiley_bad} {self.test_bad} {self.smiley_bad}\n' \
+                   f'\n{self.bad_string_s_t_s}\n' \
                    f'свою продукцию на животных!\n\n' \
                    f'{self.smiley_bad}{yes}'
 
@@ -102,7 +107,7 @@ class DataForBot:
                 and no is None \
                 and yes is None:
             return f'{start_phrase}\nВсе бренды, подходящие под запрос,' \
-                   f'\n{self.smiley_working} {self.test_working} {self.smiley_working}\n' \
+                   f'\n{self.working_string_s_t_s}\n' \
                    f'свою продукцию на животных!\n\n' \
                    f'{self.smiley_working}{working}'
 
@@ -110,39 +115,44 @@ class DataForBot:
                 and no is not None \
                 and working is None:
             return f'{start_phrase}\n\n' \
-                   f'Бренды, которые {self.smiley_good} {self.test_good} {self.smiley_good}:\n\n' \
+                   f'Бренды, которые {self.good_string_s_t_s}:\n\n' \
                    f'{self.smiley_good}{no}\n\n\n' \
-                   f'Бренды, которые {self.smiley_bad} {self.test_bad} {self.smiley_bad}:\n\n' \
+                   f'Бренды, которые {self.bad_string_s_t_s}:\n\n' \
                    f'{self.smiley_bad}{yes}\n\n'
 
         elif yes is not None \
                 and working is not None \
                 and no is None:
             return f'{start_phrase}\n\n' \
-                   f'Бренды, которые {self.smiley_working} {self.test_working} {self.smiley_working}:\n\n' \
+                   f'Бренды, которые {self.working_string_s_t_s}:\n\n' \
                    f'{self.smiley_working}{working}\n\n\n' \
-                   f'Бренды, которые {self.smiley_bad} {self.test_bad} {self.smiley_bad}:\n\n' \
+                   f'Бренды, которые {self.bad_string_s_t_s}:\n\n' \
                    f'{self.smiley_bad}{yes}\n\n'
 
         elif no is not None \
                 and working is not None \
                 and yes is None:
             return f'{start_phrase}\n\n' \
-                   f'Бренды, которые {self.smiley_working} {self.test_working} {self.smiley_working}:\n\n' \
+                   f'Бренды, которые {self.working_string_s_t_s}:\n\n' \
                    f'{self.smiley_working}{working}\n\n\n' \
-                   f'Бренды, которые {self.smiley_good} {self.test_good} {self.smiley_good}:\n\n' \
+                   f'Бренды, которые {self.good_string_s_t_s}:\n\n' \
                    f'{self.smiley_good}{no}\n\n'
 
         else:
             return f'{start_phrase}\n\n' \
-                   f'Бренды, которые {self.smiley_working} {self.test_working} {self.smiley_working}:\n\n' \
+                   f'Бренды, которые {self.working_string_s_t_s}:\n\n' \
                    f'{self.smiley_working}{working}\n\n\n' \
-                   f'Бренды, которые {self.smiley_good} {self.test_good} {self.smiley_good}:\n\n' \
+                   f'Бренды, которые {self.good_string_s_t_s}:\n\n' \
                    f'{self.smiley_good}{no}\n\n' \
-                   f'Бренды, которые {self.smiley_bad} {self.test_bad} {self.smiley_bad}:\n\n' \
+                   f'Бренды, которые {self.bad_string_s_t_s}:\n\n' \
                    f'{self.smiley_bad}{yes}\n\n'
 
     @staticmethod
     def answer_for_none():
         return 'Бот не нашел такую компанию в \"Черном\" или \"Белом\" списке.\n' \
                'Это может быть из-за того, что компанию пока нельзя отнести ни к одному из списков или из-за некоректного ввода.'
+
+
+if __name__ == '__main__':
+    a = DataForBot('estee')
+    print(a.correct_name())
