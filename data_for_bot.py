@@ -22,7 +22,6 @@ class DataForBot:
         if len(self.name) <= 2:
             return 'Длинна строки слишком маленькая, боту нужно больше символов.'
         else:
-            print(self.name)
             return self.search()
 
     def search(self):
